@@ -1,24 +1,27 @@
-package com.zeketian.plugin.pojogenerator.entity;
+package com.zeketian.plugin.pojogenerator.vo;
 
-import com.zeketian.plugin.pojogenerator.enums.FieldDataTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * @author zeke
- * @description 表字段实体类
- * @date created in 2022/10/3 23:04
+ * @description 表字段
+ * @date created in 2022/10/4 20:52
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TableFieldEntity {
-
+public class TableFieldVo {
     /**
      * 名字
      */
     private String name;
+
+    /**
+     * sql 中的名字
+     */
+    private String sqlName;
 
     /**
      * 注释
@@ -33,11 +36,10 @@ public class TableFieldEntity {
     /**
      * 数据类型
      */
-    private FieldDataTypeEnum dataType;
+    private String dataType;
 
     /**
      * 默认值
      */
     private String defaultValue;
-
 }

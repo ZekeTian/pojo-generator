@@ -1,0 +1,52 @@
+package ${packageName};
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+#if(${hasTimestamp})
+import java.sql.Timestamp;
+#end
+#if(${hasDate})
+import java.util.Date;
+#end
+
+/**
+ * @author ${user}
+ * @description 表 "${table.sqlName}" 对应的 pojo 类
+ * @date created in ${createTime}
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName("${table.sqlName}")
+public class ${table.name}Pojo {
+
+    #foreach(${column} in ${columnList})
+    #if(${column.primaryKey})
+    /**
+     * ${column.comment}
+     */
+    @TableId(type = IdType.AUTO)
+    private ${column.dataType} ${column.name};
+    #end
+    #end
+
+    #foreach(${column} in ${columnList})
+    #if(!${column.primaryKey})
+    /**
+     * ${column.comment}
+     */
+    @TableField("${column.sqlName}")
+    private ${column.dataType} ${column.name};
+
+    #end
+    #end
+}

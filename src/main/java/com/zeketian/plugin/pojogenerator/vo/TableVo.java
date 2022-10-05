@@ -1,4 +1,4 @@
-package com.zeketian.plugin.pojogenerator.entity;
+package com.zeketian.plugin.pojogenerator.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author zeke
- * @description 表实体类
- * @date created in 2022/10/3 23:01
+ * @description 表
+ * @date created in 2022/10/4 20:52
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TableEntity {
+public class TableVo {
 
     /**
      * 名字
@@ -20,17 +20,17 @@ public class TableEntity {
     private String name;
 
     /**
+     * sql 中的名字
+     */
+    private String sqlName;
+
+    /**
      * 注释
      */
     private String comment;
 
-    /**
-     * 数据库引擎
-     */
     private String engine;
 
-    /**
-     * 数据库字符集
-     */
     private String charset;
+
 }
