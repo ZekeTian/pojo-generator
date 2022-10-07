@@ -16,4 +16,8 @@ public class VelocityConstants {
     public static final String COLUMN_LIST = "columnList";
 
     public static final String PACKAGE_NAME = "packageName";
+
+    public static final String ENABLE_MYBATIS_PLUS = "enableMybatisPlus";
+
+    public static final String TEMPLATE_FILE_PATH = "/velocity/pojo-template.vm";
 }

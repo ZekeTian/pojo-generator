@@ -1,9 +1,11 @@
 package ${packageName};
 
+#if(${enableMybatisPlus})
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+#end
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,9 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+#if(${enableMybatisPlus})
 @TableName("${table.sqlName}")
+#end
 public class ${table.name}Pojo {
 
     #foreach(${column} in ${columnList})
@@ -34,7 +38,9 @@ public class ${table.name}Pojo {
     /**
      * ${column.comment}
      */
+    #if(${enableMybatisPlus})
     @TableId(type = IdType.AUTO)
+    #end
     private ${column.dataType} ${column.name};
     #end
     #end
@@ -44,7 +50,9 @@ public class ${table.name}Pojo {
     /**
      * ${column.comment}
      */
+    #if(${enableMybatisPlus})
     @TableField("${column.sqlName}")
+    #end
     private ${column.dataType} ${column.name};
 
     #end

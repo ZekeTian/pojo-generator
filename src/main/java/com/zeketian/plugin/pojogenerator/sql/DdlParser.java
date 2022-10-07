@@ -43,9 +43,13 @@ public class DdlParser {
         mySqlParser = new MySqlParser(new CommonTokenStream(mySqlLexer));
     }
 
-    public void parse() {
-        MySqlParser.DdlStatementContext ddlStatementContext = mySqlParser.ddlStatement();
-        walk(ddlStatementContext);
+    public void parse() throws IllegalArgumentException {
+        try {
+            MySqlParser.DdlStatementContext ddlStatementContext = mySqlParser.ddlStatement();
+            walk(ddlStatementContext);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse sql, please check whether the sql syntax is correct!");
+        }
     }
 
     private void walk(ParseTree node) {

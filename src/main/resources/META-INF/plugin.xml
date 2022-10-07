@@ -17,5 +17,9 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="PojoGenerator" class="com.zeketian.plugin.pojogenerator.action.PojoGenerator" text="Pojo Generator"
+                description="This plugin can automatically generate pojo classes according to the table creation statement.">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>
