@@ -6,12 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
@@ -46,6 +48,10 @@ public class MainController {
         }
         TableEntity table = ddlParser.getTable();
         List<TableFieldEntity> tableFields = ddlParser.getTableFields();
+
+        if (StringUtils.isEmpty(table.getName())) {
+            throw new RuntimeException("Failed to parse sql");
+        }
 
         // 确定存在的数据类型
         // 数据类型 map，key: 数据类型，value: 该类型是否存在（true，表示该类型存在）
@@ -89,7 +95,7 @@ public class MainController {
         File outputFile = createOutputFile(projectPath, packageName, tableVo.getName());
         try (InputStream inputStream = getClass().getResourceAsStream(VelocityConstants.TEMPLATE_FILE_PATH);
             BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {
+                new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
             ve.evaluate(vc, writer, "generateJavaFile", inputStream);
         } catch (IOException e) {
             throw e;
@@ -114,7 +120,7 @@ public class MainController {
     }
 
     private File createOutputFile(String projectPath, String packageName, String tableName) throws IOException {
-        String outputPath = resolveJavaFilePath(projectPath, packageName, tableName);
+        String outputPath = generateJavaFilePath(projectPath, packageName, tableName);
         File outputFile = new File(outputPath);
         File parentFile = outputFile.getParentFile();
         if (!parentFile.exists()) {
@@ -127,7 +133,7 @@ public class MainController {
         return outputFile;
     }
 
-    private String resolveJavaFilePath(String projectPath, String packageName, String tableName) {
+    private String generateJavaFilePath(String projectPath, String packageName, String tableName) {
         String suffix = "Pojo";
         String packagePath = packageName.replaceAll("\\.", "/");
         return String.format("%s/src/main/java/%s/%s%s.java", projectPath, packagePath, tableName, suffix);

@@ -62,7 +62,7 @@ public class DdlParser {
             return;
         }
         if (node instanceof MySqlParser.TableOptionCommentContext) {
-            tableEntity.setComment(node.getText());
+            tableEntity.setComment(((MySqlParser.TableOptionCommentContext) node).STRING_LITERAL().getText());
             return;
         }
         if (node instanceof MySqlParser.ColumnDeclarationContext) {

@@ -22,7 +22,7 @@ import java.util.Date;
 
 /**
  * @author ${user}
- * @description 表 "${table.sqlName}" 对应的 pojo 类
+ * @description 表 "${table.sqlName}" 对应的 pojo 类 #if("!${table.comment}" != "")（${table.comment}） #end。
  * @date created in ${createTime}
  */
 @Data
@@ -33,28 +33,28 @@ import java.util.Date;
 #end
 public class ${table.name}Pojo {
 
-    #foreach(${column} in ${columnList})
-    #if(${column.primaryKey})
+#foreach(${column} in ${columnList})
+#if(${column.primaryKey})
     /**
      * ${column.comment}
      */
-    #if(${enableMybatisPlus})
+#if(${enableMybatisPlus})
     @TableId(type = IdType.AUTO)
-    #end
+#end
     private ${column.dataType} ${column.name};
-    #end
-    #end
+#end
+#end
 
-    #foreach(${column} in ${columnList})
-    #if(!${column.primaryKey})
+#foreach(${column} in ${columnList})
+#if(!${column.primaryKey})
     /**
      * ${column.comment}
      */
-    #if(${enableMybatisPlus})
+#if(${enableMybatisPlus})
     @TableField("${column.sqlName}")
     #end
     private ${column.dataType} ${column.name};
 
-    #end
-    #end
+#end
+#end
 }

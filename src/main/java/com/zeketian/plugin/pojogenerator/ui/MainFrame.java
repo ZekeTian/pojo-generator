@@ -1,8 +1,8 @@
 package com.zeketian.plugin.pojogenerator.ui;
 
-import lombok.Getter;
-
 import javax.swing.*;
+
+import lombok.Getter;
 
 /**
  * @author zeke
