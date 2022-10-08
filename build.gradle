@@ -15,11 +15,12 @@ dependencies {
     testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'org.antlr', name: 'antlr4-runtime', version: '4.10.1'
+    
     // 如果想在本地直接运行 pojo 类文件的生成方法，则需要添加如下依赖。如果是 runIde 方式运行，则不需要添加如下依赖，因为 idea 本身的运行环境中包含了 velocity
     // implementation group: 'org.apache.velocity', name: 'velocity-engine-core', version: '2.3'
+    // 如果想在本地直接运行，并且 GUI Designer 使用的是 GridLayoutManger (Intellij)，则需要添加如下依赖。如果使用的是 GridBagLayout，则不需要
+    // implementation group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
 
-    // 如果 GUI Designer 使用的是 GridLayoutManger (Intellij)，则需要添加如下依赖。如果使用的是 GridBagLayout，则不需要
-    implementation group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
     // 添加 lombok。在 gradle 5.0 及以后，除了添加 compileOnly 之外，还需要添加 annotationProcessor
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
@@ -48,4 +49,20 @@ test {
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+tasks.withType(Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// package an 'uber' (AKA 'fat') JAR
+tasks.register('uberJar', Jar) {
+    archiveClassifier = 'uber'
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
 }
