@@ -52,7 +52,7 @@ public class ${table.name}Pojo {
      */
 #if(${enableMybatisPlus})
     @TableField("${column.sqlName}")
-    #end
+#end
     private ${column.dataType} ${column.name};
 
 #end
