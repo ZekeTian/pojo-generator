@@ -59,6 +59,7 @@ public class MainDialog extends DialogWrapper {
             }
             String packageName = mainFrame.getInputPackage().getText().trim();
             String inputSql = mainFrame.getInputSql().getText().trim();
+            Boolean enableMybatisPlus = mainFrame.getCbMybatisPlus().isSelected();
 
             if (StringUtils.isEmpty(packageName)) {
                 Messages.showInfoMessage("Please input package name!", "Info");
@@ -74,7 +75,7 @@ public class MainDialog extends DialogWrapper {
             }
 
             try {
-                mainController.generatePojo(project.getBasePath(), inputSql, packageName, false);
+                mainController.generatePojo(project.getBasePath(), inputSql, packageName, enableMybatisPlus);
                 super.doAction(actionEvent);
             } catch (Exception e) {
                 Messages.showErrorDialog("Failed to generate.\n" + e.getMessage(), "Error");

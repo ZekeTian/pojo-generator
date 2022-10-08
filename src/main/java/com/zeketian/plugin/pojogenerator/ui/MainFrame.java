@@ -18,6 +18,10 @@ public class MainFrame extends JFrame {
 
     private JTextArea inputSql;
 
+    private JPanel checkBoxPanel;
+
+    private JCheckBox cbMybatisPlus;
+
     public MainFrame() {
         setSize(600, 300);
     }
