@@ -1,10 +1,11 @@
 package com.zeketian.plugin.pojogenerator.sql;
 
-import com.zeketian.plugin.pojogenerator.entity.TableEntity;
-import com.zeketian.plugin.pojogenerator.entity.TableFieldEntity;
-import com.zeketian.plugin.pojogenerator.enums.FieldDataTypeEnum;
-import com.zeketian.plugin.pojogenerator.sql.analyzer.MySqlLexer;
-import com.zeketian.plugin.pojogenerator.sql.analyzer.MySqlParser;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -12,11 +13,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import com.zeketian.plugin.pojogenerator.entity.TableEntity;
+import com.zeketian.plugin.pojogenerator.entity.TableFieldEntity;
+import com.zeketian.plugin.pojogenerator.enums.FieldDataTypeEnum;
+import com.zeketian.plugin.pojogenerator.sql.analyzer.MySqlLexer;
+import com.zeketian.plugin.pojogenerator.sql.analyzer.MySqlParser;
 
 /**
  * @author zeke
@@ -48,7 +49,8 @@ public class DdlParser {
             MySqlParser.DdlStatementContext ddlStatementContext = mySqlParser.ddlStatement();
             walk(ddlStatementContext);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse sql, please check whether the sql syntax is correct!");
+            throw new IllegalArgumentException(String
+                .format("Failed to parse sql, please check whether the sql syntax is correct!\n%s", e.getMessage()));
         }
     }
 
@@ -191,7 +193,7 @@ public class DdlParser {
         }
 
         if (dimensionNode.INTEGER() != null || dimensionNode.TINYINT() != null || dimensionNode.SMALLINT() != null
-                || dimensionNode.MEDIUMINT() != null) {
+            || dimensionNode.MEDIUMINT() != null || dimensionNode.INT() != null) {
             return FieldDataTypeEnum.INTEGER_TYPE;
         }
 
