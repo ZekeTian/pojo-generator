@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.zeketian.plugin'
-version '1.0-SNAPSHOT'
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ dependencies {
     testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'org.antlr', name: 'antlr4-runtime', version: '4.10.1'
-    
+
     // 如果想在本地直接运行 pojo 类文件的生成方法，则需要添加如下依赖。如果是 runIde 方式运行，则不需要添加如下依赖，因为 idea 本身的运行环境中包含了 velocity
     // implementation group: 'org.apache.velocity', name: 'velocity-engine-core', version: '2.3'
     // 如果想在本地直接运行，并且 GUI Designer 使用的是 GridLayoutManger (Intellij)，则需要添加如下依赖。如果使用的是 GridBagLayout，则不需要
@@ -35,13 +35,17 @@ sourceCompatibility = 1.8
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    //    version = '2019.1'
+    // 本地运行的版本。此处的版本需要和电脑安装的版本一样，否则 runIde 时会无法启动
     version = '2021.2'
 }
 patchPluginXml {
-    changeNotes = """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+    // 可以兼容的最低的 idea 版本
+    sinceBuild = "191"
+    // 可以兼容的最高的 idea 版本
+    untilBuild = "999"
+//    changeNotes = """
+//      Add change notes here.<br>
+//      <em>most HTML tags may be used</em>"""
 }
 test {
     useJUnitPlatform()
