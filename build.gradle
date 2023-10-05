@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.0'
+    id 'org.jetbrains.intellij' version '1.13.3'
     id 'java'
 }
 
@@ -7,6 +7,17 @@ group 'com.zeketian.plugin'
 version '0.1'
 
 repositories {
+    maven {
+        url 'https://maven.aliyun.com/repository/public/'
+    }
+    maven {
+        url 'https://maven.aliyun.com/repository/central'
+    }
+    maven {
+        url 'https://cache-redirector.jetbrains.com/intellij-dependencies'
+    }
+
+    mavenLocal()
     mavenCentral()
 }
 
@@ -31,21 +42,25 @@ dependencies {
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.4.2.Final'
 }
 
-sourceCompatibility = 1.8
+// idea 2023 版本需要 jdk17
+sourceCompatibility = 17
+// jdk 1.8 用于以前旧 idea 开发
+//sourceCompatibility = 1.8
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // 本地运行的版本。此处的版本需要和电脑安装的版本一样，否则 runIde 时会无法启动
-    version = '2021.2'
+    version = '2023.1.2'
+    type = 'IC'
 }
 patchPluginXml {
     // 可以兼容的最低的 idea 版本
     sinceBuild = "191"
     // 可以兼容的最高的 idea 版本
     untilBuild = "999"
-//    changeNotes = """
-//      Add change notes here.<br>
-//      <em>most HTML tags may be used</em>"""
+    //    changeNotes = """
+    //      Add change notes here.<br>
+    //      <em>most HTML tags may be used</em>"""
 }
 test {
     useJUnitPlatform()
