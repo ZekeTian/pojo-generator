@@ -1,18 +1,19 @@
 package com.zeketian.plugin.pojogenerator.ui;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.*;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.zeketian.plugin.pojogenerator.controller.MainController;
+import com.zeketian.plugin.pojogenerator.utils.IntellijFileUtil;
 import com.zeketian.plugin.pojogenerator.utils.Validator;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaSourceRootType;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 /**
  * @author zeke
@@ -24,11 +25,13 @@ public class MainDialog extends DialogWrapper {
     private MainController mainController;
     private MainFrame mainFrame;
     private Project project;
+    private Module module;
 
-    public MainDialog(Project project) {
+    public MainDialog(Project project, Module module) {
         super(project);
         this.mainController = new MainController();
         this.project = project;
+        this.module = module;
         setTitle("Pojo Generator");
         setOKButtonText("OK");
         setCancelButtonText("Cancel");
@@ -38,7 +41,7 @@ public class MainDialog extends DialogWrapper {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        mainFrame = new MainFrame();
+        mainFrame = new MainFrame(module);
         return mainFrame.getMainPanel();
     }
 
@@ -47,7 +50,7 @@ public class MainDialog extends DialogWrapper {
     protected Action[] createActions() {
         CustomOkAction customOkAction = new CustomOkAction();
         customOkAction.putValue(Action.DEFAULT, true);
-        return new Action[] {customOkAction, this.getCancelAction()};
+        return new Action[]{customOkAction, this.getCancelAction()};
     }
 
     protected class CustomOkAction extends OkAction {
@@ -57,9 +60,15 @@ public class MainDialog extends DialogWrapper {
             if (mainFrame == null) {
                 return;
             }
-            String packageName = mainFrame.getInputPackage().getText().trim();
-            String inputSql = mainFrame.getInputSql().getText().trim();
-            Boolean enableMybatisPlus = mainFrame.getCbMybatisPlus().isSelected();
+            String sourceRoots = IntellijFileUtil.getJavaSourceRoots(module, JavaSourceRootType.SOURCE);
+            if (StringUtils.isEmpty(sourceRoots)) {
+                Messages.showErrorDialog("Could not find java source roots!", "Error");
+                return;
+            }
+
+            String packageName = mainFrame.getPackageName();
+            String inputSql = mainFrame.getInputSql();
+            Boolean enableMybatisPlus = mainFrame.isEnableMybatisPlus();
 
             if (StringUtils.isEmpty(packageName)) {
                 Messages.showInfoMessage("Please input package name!", "Info");
@@ -75,7 +84,7 @@ public class MainDialog extends DialogWrapper {
             }
 
             try {
-                mainController.generatePojo(project.getBasePath(), inputSql, packageName, enableMybatisPlus);
+                mainController.generatePojo(sourceRoots, inputSql, packageName, enableMybatisPlus);
                 super.doAction(actionEvent);
             } catch (Exception e) {
                 Messages.showErrorDialog("Failed to generate.\n" + e.getMessage(), "Error");

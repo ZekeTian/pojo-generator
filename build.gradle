@@ -52,6 +52,8 @@ intellij {
     // 本地运行的版本。此处的版本需要和电脑安装的版本一样，否则 runIde 时会无法启动
     version = '2023.1.2'
     type = 'IC'
+    // 使用了 intellij 中 java 的 PSI 特性，所以需要在下面指定 java
+    plugins = ['java']
 }
 patchPluginXml {
     // 可以兼容的最低的 idea 版本

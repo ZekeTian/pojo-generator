@@ -1,5 +1,19 @@
 package com.zeketian.plugin.pojogenerator.controller;
 
+import com.zeketian.plugin.pojogenerator.entity.TableEntity;
+import com.zeketian.plugin.pojogenerator.entity.TableFieldEntity;
+import com.zeketian.plugin.pojogenerator.sql.DdlParser;
+import com.zeketian.plugin.pojogenerator.utils.ConvertorUtil;
+import com.zeketian.plugin.pojogenerator.utils.VelocityConstants;
+import com.zeketian.plugin.pojogenerator.vo.TableFieldVo;
+import com.zeketian.plugin.pojogenerator.vo.TableVo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.NullLogChute;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,21 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.log.NullLogChute;
-
-import com.zeketian.plugin.pojogenerator.entity.TableEntity;
-import com.zeketian.plugin.pojogenerator.entity.TableFieldEntity;
-import com.zeketian.plugin.pojogenerator.sql.DdlParser;
-import com.zeketian.plugin.pojogenerator.utils.ConvertorUtil;
-import com.zeketian.plugin.pojogenerator.utils.VelocityConstants;
-import com.zeketian.plugin.pojogenerator.vo.TableFieldVo;
-import com.zeketian.plugin.pojogenerator.vo.TableVo;
-
 /**
  * @author zeke
  * @description 用于处理相关逻辑
@@ -37,8 +36,8 @@ public class MainController {
 
     private final ConvertorUtil convertor = ConvertorUtil.INSTANCE;
 
-    public void generatePojo(String projectPath, String sql, String packageName, Boolean enableMybatisPlus)
-        throws IOException, IllegalArgumentException {
+    public void generatePojo(String sourceDir, String sql, String packageName, Boolean enableMybatisPlus)
+            throws IOException, IllegalArgumentException {
         // 解析 sql
         DdlParser ddlParser = new DdlParser(sql);
         try {
@@ -92,10 +91,10 @@ public class MainController {
         setVariable(vc, packageName, tableVo, tableFieldVos, enableMybatisPlus);
 
         // 获取模板，生成内容，并将内容保存成文件
-        File outputFile = createOutputFile(projectPath, packageName, tableVo.getName());
+        File outputFile = createOutputFile(sourceDir, packageName, tableVo.getName());
         try (InputStream inputStream = getClass().getResourceAsStream(VelocityConstants.TEMPLATE_FILE_PATH);
-            BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+             BufferedWriter writer =
+                     new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
             ve.evaluate(vc, writer, "generateJavaFile", inputStream);
         } catch (IOException e) {
             throw e;
@@ -103,7 +102,7 @@ public class MainController {
     }
 
     private void setVariable(VelocityContext vc, String packageName, TableVo table, List<TableFieldVo> tableFields,
-        Boolean enableMybatisPlus) {
+                             Boolean enableMybatisPlus) {
         vc.put(VelocityConstants.PACKAGE_NAME, packageName);
         vc.put(VelocityConstants.ENABLE_MYBATIS_PLUS, enableMybatisPlus);
 
@@ -119,8 +118,8 @@ public class MainController {
         vc.put(VelocityConstants.COLUMN_LIST, tableFields);
     }
 
-    private File createOutputFile(String projectPath, String packageName, String tableName) throws IOException {
-        String outputPath = generateJavaFilePath(projectPath, packageName, tableName);
+    private File createOutputFile(String sourceDir, String packageName, String tableName) throws IOException {
+        String outputPath = generateJavaFilePath(sourceDir, packageName, tableName);
         File outputFile = new File(outputPath);
         File parentFile = outputFile.getParentFile();
         if (!parentFile.exists()) {
@@ -133,10 +132,10 @@ public class MainController {
         return outputFile;
     }
 
-    private String generateJavaFilePath(String projectPath, String packageName, String tableName) {
+    private String generateJavaFilePath(String sourceDir, String packageName, String tableName) {
         String suffix = "Pojo";
         String packagePath = packageName.replaceAll("\\.", "/");
-        return String.format("%s/src/main/java/%s/%s%s.java", projectPath, packagePath, tableName, suffix);
+        return String.format("%s/%s/%s%s.java", sourceDir, packagePath, tableName, suffix);
     }
 
 }
