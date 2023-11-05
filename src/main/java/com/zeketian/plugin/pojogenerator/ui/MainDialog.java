@@ -71,7 +71,7 @@ public class MainDialog extends DialogWrapper {
             Boolean enableMybatisPlus = mainFrame.isEnableMybatisPlus();
 
             if (StringUtils.isEmpty(packageName)) {
-                Messages.showInfoMessage("Please input package name!", "Info");
+                Messages.showInfoMessage("Please select package!", "Info");
                 return;
             }
             if (!Validator.isPackage(packageName)) {
